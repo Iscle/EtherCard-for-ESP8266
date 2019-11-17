@@ -1,7 +1,6 @@
 #include "bufferfiller.h"
-#include <avr/eeprom.h>
 
-void BufferFiller::emit_p(const char* fmt PROGMEM, ...) {
+void BufferFiller::emit_p(const char* fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
     for (;;) {
@@ -50,7 +49,7 @@ void BufferFiller::emit_p(const char* fmt PROGMEM, ...) {
             strcpy((char*) ptr, va_arg(ap, const char*));
             break;
         case 'F': {
-            const char* s PROGMEM = va_arg(ap, const char*);
+            const char* s = va_arg(ap, const char*);
             char d;
             while ((d = pgm_read_byte(s++)) != 0)
                 *ptr++ = d;
@@ -59,8 +58,8 @@ void BufferFiller::emit_p(const char* fmt PROGMEM, ...) {
         case 'E': {
             byte* s = va_arg(ap, byte*);
             char d;
-            while ((d = eeprom_read_byte(s++)) != 0)
-                *ptr++ = d;
+            //while ((d = eeprom_read_byte(s++)) != 0)
+            //    *ptr++ = d;
             continue;
         }
         default:

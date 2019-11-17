@@ -72,7 +72,7 @@ public:
     //   offs = 63;
     // }
 
-    static void prepare (const char* fmt PROGMEM, ...);
+    static void prepare (const char* fmt, ...);
     static uint16_t length ();
     static void extract (uint16_t offset, uint16_t count, void* buf);
     static void cleanup ();

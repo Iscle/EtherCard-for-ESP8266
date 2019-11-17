@@ -1,5 +1,4 @@
 #include <stdarg.h>
-#include <avr/eeprom.h>
 
 #include "stash.h"
 
@@ -137,10 +136,10 @@ uint16_t Stash::size () {
 
 // write information about the fmt string and the arguments into special page/block 0
 // block 0 is initially marked as allocated and never returned by allocateBlock
-void Stash::prepare (const char* fmt PROGMEM, ...) {
+void Stash::prepare (const char* fmt, ...) {
     Stash::load(WRITEBUF, 0);
     uint16_t* segs = Stash::bufs[WRITEBUF].words;
-    *segs++ = strlen_P(fmt);
+    *segs++ = strlen(fmt);
 #ifdef __AVR__
     *segs++ = (uint16_t) fmt;
 #else
@@ -170,13 +169,13 @@ void Stash::prepare (const char* fmt PROGMEM, ...) {
                 arglen = strlen((const char*) argval);
                 break;
             case 'F':
-                arglen = strlen_P((const char*) argval);
+                arglen = strlen((const char*) argval);
                 break;
             case 'E': {
                 byte* s = (byte*) argval;
                 char d;
-                while ((d = eeprom_read_byte(s++)) != 0)
-                    ++arglen;
+                //while ((d = eeprom_read_byte(s++)) != 0)
+                //    ++arglen;
                 break;
             }
             case 'H': {
@@ -206,9 +205,9 @@ void Stash::extract (uint16_t offset, uint16_t count, void* buf) {
     Stash::load(WRITEBUF, 0);
     uint16_t* segs = Stash::bufs[WRITEBUF].words;
 #ifdef __AVR__
-    const char* fmt PROGMEM = (const char*) *++segs;
+    const char* fmt = (const char*) *++segs;
 #else
-    const char* fmt PROGMEM = (const char*)((segs[2] << 16) | segs[1]);
+    const char* fmt = (const char*)((segs[2] << 16) | segs[1]);
     segs += 2;
 #endif
     Stash stash;
@@ -254,7 +253,7 @@ void Stash::extract (uint16_t offset, uint16_t count, void* buf) {
             c = pgm_read_byte(ptr++);
             break;
         case 'E':
-            c = eeprom_read_byte((byte*) ptr++);
+            //c = eeprom_read_byte((byte*) ptr++);
             break;
         case 'H':
             c = ((Stash*) ptr)->get();
@@ -274,9 +273,9 @@ void Stash::cleanup () {
     Stash::load(WRITEBUF, 0);
     uint16_t* segs = Stash::bufs[WRITEBUF].words;
 #ifdef __AVR__
-    const char* fmt PROGMEM = (const char*) *++segs;
+    const char* fmt = (const char*) *++segs;
 #else
-    const char* fmt PROGMEM = (const char*)((segs[2] << 16) | segs[1]);
+    const char* fmt = (const char*)((segs[2] << 16) | segs[1]);
     segs += 2;
 #endif
     for (;;) {

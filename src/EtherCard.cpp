@@ -11,7 +11,6 @@
 
 #include "EtherCard.h"
 #include <stdarg.h>
-#include <avr/eeprom.h>
 
 EtherCard ether;
 

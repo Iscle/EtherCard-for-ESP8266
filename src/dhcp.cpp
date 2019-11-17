@@ -344,7 +344,7 @@ bool EtherCard::dhcpSetup (const char *hname, bool fromRam) {
             strncpy(hostname, hname, DHCP_HOSTNAME_MAX_LEN);
         }
         else {
-            strncpy_P(hostname, hname, DHCP_HOSTNAME_MAX_LEN);
+            strncpy(hostname, hname, DHCP_HOSTNAME_MAX_LEN);
         }
     }
     else {
